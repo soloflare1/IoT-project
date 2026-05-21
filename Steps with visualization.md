@@ -1,6 +1,6 @@
 🟦  ESP32 + OLED + BUTTON + BUZZER + GPS + GSM
 
-This guide explains EVERYTHING step-by-step:
+step-by-step:
 
 ✅ Wiring
 ✅ Breadboard usage
