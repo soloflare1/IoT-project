@@ -21,7 +21,7 @@ bool sosExecuted = false;
 
 float lat = 0, lng = 0;
 
-// ---------------- HOME SCREEN ----------------
+// ---------------- NORMAL SCREEN ----------------
 void showHome() {
   d.clearDisplay();
   d.setTextColor(WHITE);
@@ -31,23 +31,54 @@ void showHome() {
   d.println("SHUROKKHA");
 
   d.setTextSize(1);
-  d.setCursor(0, 25);
-  d.println("GPS TRACKING ACTIVE");
+  d.setCursor(15, 25);
+  d.println("Your Safety");
 
-  d.setCursor(0, 40);
-  d.println("SOS READY MODE");
+  d.setCursor(15, 40);
+  d.println("Our Priority");
 
   d.display();
 }
 
-// ---------------- BUTTON FUNCTION ----------------
+// ---------------- SILENT SOS ----------------
+void showSilentSOS() {
+  d.clearDisplay();
+  d.setTextColor(WHITE);
+
+  d.setTextSize(2);
+  d.setCursor(25, 15);
+  d.println("SILENT");
+
+  d.setTextSize(1);
+  d.setCursor(10, 40);
+  d.println("Alert Sent Quietly");
+
+  d.display();
+}
+
+// ---------------- LOUD SOS ----------------
+void showLoudSOS() {
+  d.clearDisplay();
+  d.setTextColor(WHITE);
+
+  d.setTextSize(2);
+  d.setCursor(40, 15);
+  d.println("LOUD");
+
+  d.setTextSize(1);
+  d.setCursor(5, 40);
+  d.println("Emergency Active");
+
+  d.display();
+}
+
+// ---------------- BUTTON ----------------
 bool buttonPressed() {
   static bool lastState = HIGH;
-
   bool currentState = digitalRead(btn);
 
   if (lastState == HIGH && currentState == LOW) {
-    delay(50); // debounce
+    delay(50);
     lastState = currentState;
     return true;
   }
@@ -86,7 +117,7 @@ void loop() {
     gps.encode(gpsSerial.read());
   }
 
-  // ---------------- GPS LOGIC ----------------
+  // GPS LOGIC
   if (gps.location.isValid()) {
 
     float newLat = gps.location.lat();
@@ -106,36 +137,28 @@ void loop() {
     lng = prefs.getFloat("lng", lng);
   }
 
-  // ---------------- BUTTON DETECTION ----------------
+  // BUTTON PRESS
   if (buttonPressed()) {
-
     pressCount++;
     lastPressTime = millis();
     sosExecuted = false;
 
-    Serial.print("Press Count: ");
+    Serial.print("Press: ");
     Serial.println(pressCount);
   }
 
-  // ---------------- NORMAL MODE ----------------
+  // NORMAL DISPLAY
   if (pressCount == 0) {
-
-    Serial.print("LAT: ");
-    Serial.println(lat, 6);
-
-    Serial.print("LNG: ");
-    Serial.println(lng, 6);
-
     showHome();
     delay(800);
   }
 
-  // ---------------- SOS TRIGGER ----------------
+  // SOS TRIGGER
   if (pressCount > 0 && millis() - lastPressTime > 1200 && !sosExecuted) {
 
     sosExecuted = true;
 
-    Serial.println("SOS TRIGGERED");
+    Serial.println("SOS ACTIVATED");
 
     Serial.print("LAT: ");
     Serial.println(lat, 6);
@@ -148,30 +171,21 @@ void loop() {
     Serial.print(",");
     Serial.println(lng, 6);
 
-    // ---------------- SILENT MODE ----------------
+    // SILENT MODE
     if (pressCount == 2) {
 
-      Serial.println("MODE: SILENT SOS");
+      Serial.println("MODE: SILENT");
 
-      d.clearDisplay();
-      d.setTextSize(2);
-      d.setCursor(20, 25);
-      d.println("SILENT");
-      d.display();
-
+      showSilentSOS();
       digitalWrite(buzzer, LOW);
     }
 
-    // ---------------- LOUD MODE ----------------
+    // LOUD MODE
     else if (pressCount == 3) {
 
-      Serial.println("MODE: LOUD SOS");
+      Serial.println("MODE: LOUD");
 
-      d.clearDisplay();
-      d.setTextSize(2);
-      d.setCursor(30, 25);
-      d.println("LOUD");
-      d.display();
+      showLoudSOS();
 
       for (int i = 0; i < 10; i++) {
         digitalWrite(buzzer, HIGH);
