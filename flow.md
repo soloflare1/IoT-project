@@ -215,3 +215,68 @@ git push
 
 
 
+
+
+1. Battery → TP4056 Lithium Battery Charging Module
+
+From	To
+
+18650 Li-ion Battery (+)	TP4056 B+
+18650 Li-ion Battery (-)	TP4056 B-
+
+---
+
+2. TP4056 → XL6009 DC-DC Boost Converter
+
+From	To
+
+TP4056 OUT+	XL6009 IN+
+TP4056 OUT-	XL6009 IN-
+
+---
+
+3. XL6009 Boost Converter → ESP32 DevKit V1
+
+From	To
+
+XL6009 OUT+ (Set to 5.0V)	ESP32 VIN (5V)
+XL6009 OUT-	ESP32 GND
+
+---
+
+4. TP4056 → LM2596 DC-DC Buck Converter
+
+From	To
+
+TP4056 OUT+	LM2596 IN+
+TP4056 OUT-	LM2596 IN-
+
+---
+
+5. LM2596 Buck Converter → SIM800L GSM/GPRS Module
+
+From	To
+
+LM2596 OUT+ (Set to 4.0–4.2V)	SIM800L VCC
+LM2596 OUT-	SIM800L GND
+
+---
+
+6. ESP32 DevKit V1 → SIM800L GSM/GPRS Module
+
+ESP32	SIM800L
+
+GPIO17 (TX2)	RXD
+GPIO16 (RX2)	TXD
+GND	GND
+---
+
+7. ESP32 DevKit V1 → NEO-6M GPS Module
+
+ESP32	GPS
+
+3.3V	VCC
+GND	GND
+GPIO16 (RX2)	TX
+GPIO17 (TX2)	RX
+
